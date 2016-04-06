@@ -13,7 +13,7 @@ import thread
 ip_addr     = "10.10.2.58"          #ip地址 或者 服务器名称
 ProjectName = "美味战争"            #项目名
 logdir      = os.getcwd() + "/log"  #路径
-interval    = 5#60 * 60               #执行间隔时间
+interval    = 60 * 60               #执行间隔时间
 
 #邮件列表(接收者)
 mailto_list = [
@@ -46,7 +46,7 @@ send_mail("xxx@qq.com","title","content")
 '''
 def send_mail(to_list, title, content):
     me = "%s<"%(Header('《' + ProjectName + '》服务器警告邮件','utf-8')) + mail_user + "@" + mail_postfix+">"
-    msg = MIMEText(content, format, 'utf-8')
+    msg = MIMEText(content.encode('utf-8'), 'plain', 'utf-8')
     msg['Subject'] = title
     msg['From'] = me
     msg['To'] = ";".join(to_list)
@@ -98,7 +98,7 @@ def check_Error(now):
                         line_list.extend(["\n", last_line])
                     if not re.match("\[", line):
                         line_list.append(line)
-            last_line = line
+                last_line = line
             file_object.close()
         else:
             print log_file_name + " is not exist"

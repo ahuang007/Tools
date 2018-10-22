@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>H5游戏</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	</head>
+	<script type="text/javascript" src="md5.js"></script>
+	<script type="text/javascript">
+		function callback()
+		{
+			if (xmlHttp.readyState==4)
+			{// 4 = "loaded"
+				if (xmlHttp.status==200)
+				{// 200 = OK
+					alert("添加成功");
+				}
+				else
+				{
+					alert("Problem retrieving XML data: " + xmlHttp.status);
+				}
+			}
+		}
+		
+		function btnAction() 
+		{
+			var uid = document.getElementById('uid').value;
+			var itemtype = document.getElementById('itemtype').value;
+			var value = document.getElementById('value').value;
+			
+			if (uid == "")
+			{
+				alert("玩家ID不能为空!");
+				return (false);
+			}
+			if (itemtype == "")
+			{
+				alert("物品类型不能为空!");
+				return (false);
+			}
+			if (value == "")
+			{
+				alert("数值不能为空!");
+				return (false);
+			}
+			
+			var url = "http://192.168.0.12:7211/gmmanager?";			
+			var obj = {"op":"additem", "uid": uid, "itemtype": itemtype, "value": value};
+			var str = JSON.stringify(obj); //将JSON对象转化为JSON字符
+			var sign = hex_md5(str + 'HqZjm9cB8MP8NC4ggqhkVhZgxWXIZPAG');
+
+			url = url + "cmd=additem&data=" + str + "&sign=" +sign;
+			xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = callback;
+			xmlHttp.open("GET", url, true);// 异步处理返回 
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+			xmlHttp.send();
+		}
+	</script>
+	<body>
+		<div align="center" border="1">
+			<p>
+				<label for="uid" class="label">玩家ID :</label>
+				<input id="uid" name="uid" type="text" class="input" />
+			</p>
+			<p>
+				<label for="itemtype" class="label">物品类型:</label>
+				<input id="itemtype" name="itemtype" type="text" class="input" />
+			</p>
+			<p>
+				<label for="value" class="label">数值  :</label>
+				<input id="value" name="value" type="text" class="input" />
+			</p>			
+			<button type="submit" id="btn_submit" onclick="btnAction()"> 确 定 </button>
+			<br/>
+			<p>
+				物品类型（1卡牌，2遗物，3药水，4金币，5血量，6，血量上限，7钻石）
+				<br/>
+				数值（1，2，3填配置id；4，5，6，7填数值）
+				<br/>
+				其中添加关卡内道具 玩家必须在线 添加钻石 玩家不用在线
+			</p>			
+		</div>
+	</body>	
+</html>

@@ -46,7 +46,7 @@
 			var url = "http://192.168.0.12:7211/gmmanager?";			
 			var obj = {"op":"additem", "uid": uid, "itemtype": itemtype, "value": value};
 			var str = JSON.stringify(obj); //将JSON对象转化为JSON字符
-			var sign = hex_md5(str + 'HqZjm9cB8MP8NC4ggqhkVhZgxWXIZPAG');
+			var sign = hex_md5(str + 'xxxxxxxxxxx');
 
 			url = url + "cmd=additem&data=" + str + "&sign=" +sign;
 			xmlHttp = new XMLHttpRequest();

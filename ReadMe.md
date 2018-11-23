@@ -16,6 +16,6 @@
 * 依赖库  ：lfs 
 * 版本	  ：lua 5.1 
 
-### [html]GM工具(index.html)
+### [html]GM工具(gm.html)
 * 功能    ：GM工具
 * 服务器  ：skynet 

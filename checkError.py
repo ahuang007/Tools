@@ -10,8 +10,8 @@ import  time
 import thread
 
 #配置
-ip_addr     = "10.10.2.58"          #ip地址 或者 服务器名称
-ProjectName = "美味战争"            #项目名
+ip_addr     = "192.168.1.201"          #ip地址 或者 服务器名称
+ProjectName = "ProjectA"            #项目名
 logdir      = os.getcwd() + "/log"  #路径
 interval    = 60 * 60               #执行间隔时间
 

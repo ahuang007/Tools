@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Redis可视化查询</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	</head>
+	<style>
+		pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+		.string { color: green; }
+		.number { color: darkorange; }
+		.boolean { color: blue; }
+		.null { color: magenta; }
+		.key { color: red; }
+	</style>
+	<script type="text/javascript">
+		function syntaxHighlight(json) {
+			if (typeof json != 'string') {
+				json = JSON.stringify(json, undefined, 2);
+			}
+			json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+			return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
+				var cls = 'number';
+				if (/^"/.test(match)) {
+					if (/:$/.test(match)) {
+						cls = 'key';
+					} else {
+						cls = 'string';
+					}
+				} else if (/true|false/.test(match)) {
+					cls = 'boolean';
+				} else if (/null/.test(match)) {
+					cls = 'null';
+				}
+				return '<span class="' + cls + '">' + match + '</span>';
+			});
+		}
+	
+		function callback()
+		{
+			if (xmlHttp.readyState==4)
+			{// 4 = "loaded"
+				if (xmlHttp.status==200)
+				{// 200 = OK
+					//$('#result').html(syntaxHighlight(JSON.parse(xmlHttp.responseText)));
+
+					var element = document.getElementById('result')
+					element.textContent = JSON.stringify(JSON.parse(xmlHttp.responseText), undefined, 2);
+					//$('#result').html(syntaxHighlight(JSON.parse(xmlHttp.responseText)));
+				}
+				else
+				{
+					alert("callback error: " + xmlHttp.status);
+				}
+			}
+		}
+		
+		function btnAction() 
+		{
+			var cmd = document.getElementById('cmd').value;
+			var param1 = document.getElementById('param1').value;
+			var param2 = document.getElementById('param2').value;
+			cmd = cmd.toLowerCase()
+			if (cmd != "" && cmd != 'keys' && cmd != 'hget' && cmd != 'hgetall')
+			{
+				alert("cmd error! please input cmd: keys | hget | hgetall !");
+				return (false);
+			}
+			if (param1 == "")
+			{
+				alert("param1 error!");
+				return (false);
+			}
+			
+			var url = "http://192.168.10.201:7015/RedisQuery?";			
+			url = url + "cmd=" + cmd + "&param1=" + param1 
+			if(param2 != ""){
+				url = url + "&param2=" + param2
+			}
+			//alert(url);
+			xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = callback;
+			xmlHttp.open("GET", url, true);// 异步处理返回 
+			xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+			xmlHttp.send();
+		}
+	</script>
+	<body>
+		<div align="left" border="1">
+			<br/>
+			<p> Redis可视化查询 </p>
+			<br/>
+			<p> 目前支持的Redis指令：keys,hget,hgetall </p>
+			<p>
+				<label for="cmd" class="label">指令:</label>
+				<input id="cmd" name="cmd" type="text" class="input" />
+			</p>
+			<p>
+				<label for="param1" class="label">参数1:</label>
+				<input id="param1" name="param1" type="text" class="input" />
+			</p>
+			<p>
+				<label for="param2" class="label">参数2:</label>
+				<input id="param2" name="param2" type="text" class="input" />
+			</p>			
+			<button type="submit" id="btn_submit" onclick="btnAction()"> 确 定 </button>
+			<br/>
+			<p>
+				<label for="result" class="label">结果(json) :</label>
+				<pre id="result"></pre>
+			</p>
+		</div>
+	</body>	
+</html>

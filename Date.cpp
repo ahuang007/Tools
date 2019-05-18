@@ -1,5 +1,6 @@
 #include <time.h>
 #include <iostream>
+
 using namespace std;
  
 unsigned int getMorningTime() 
@@ -11,6 +12,12 @@ unsigned int getMorningTime()
     tm->tm_sec = 0;  
     return  mktime(tm);  
 }  
+
+double getCurrentTime() {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    return tv.tv_sec + tv.tv_usec*1.0/1000000;
+}
  
 int main()
 {

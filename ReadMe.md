@@ -19,3 +19,22 @@
 ### [html]GM工具(gm.html)
 * 功能    ：GM工具
 * 服务器  ：skynet 
+
+### [c]lua加解密库(lua-crypt.c)
+* 功能    : lua加解密库
+
+### [cpp]日期帮助函数(Data.cpp)
+* 功能    ：日期相关函数
+
+### [lua]获取lua版本(GetLuaVersion.lua)
+* 功能    ：获取lua版本
+* 来自    ：David
+
+### [c]打印二进制数据(printf_binary_byte.c)
+* 功能    ：打印二进制
+
+### [html]redis可视化查询(RedisQuery.html)
+* 功能    ：redis存储内容是序列化的 需要反序列化才能可视
+
+
+

@@ -324,6 +324,7 @@ local function GetTingInfo(cards)
     end
 
     for k, v in pairs(cardsByCardId) do
+        if #v == 4 then break end
         local copyCards = utils.copy(cards)
         if GetTingObj(copyCards, v[1]) then
             table.insert(suggestsCards, v[1])

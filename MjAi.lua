@@ -1,6 +1,4 @@
---- 麻将AI算法
--- 思路： 向听数
--- 网址： http://tenhou.net/2/
+--- 麻将AI测试
 
 package.path  = "../MjAI/?.lua;../common/?.lua;../lualib/?.lua"
 package.cpath = "../luaclib/?.so"
@@ -259,6 +257,7 @@ local function CheckCardGroups(cards)
 end
 
 local function CheckCanHu(cards)
+    table.sort(cards, function(a, b) return a.thisId < b.thisId end)
     local cardsByCardId = {} -- 相同牌值映射表 { cardId => {} }
     for _, v in ipairs(cards) do
         if not cardsByCardId[v.cardId] then
@@ -292,15 +291,28 @@ local function GetTingObj(cards, outCard)
     for i = #cards, 1, -1 do
         if (cards[i].thisId == outCard.thisId) then
             table.remove(cards, i)
+            break
         end
     end
+
+    local cardsByCardId = {} -- 相同牌值映射表 { cardId => {} }
+    for _, v in ipairs(cards) do
+        if not cardsByCardId[v.cardId] then
+            cardsByCardId[v.cardId] = {}
+        end
+        table.insert(cardsByCardId[v.cardId],  v)
+    end
+
     for cardId, _ in pairs(AllCardIds) do -- fixme: 此处可以优化 去掉不必要的遍历
-        local copyCards = utils.copy(cards)
-        local inCard = utils.copy(CardCfgByThisId[cardId*10+1])
-        inCard.thisId = cardId*10+5
-        table.insert(copyCards, inCard)
-        if(CheckCanHu(copyCards)) then
-            table.insert(inCardIds, cardId)
+        if (not cardsByCardId[cardId]) or (cardsByCardId[cardId] and #cardsByCardId[cardId] < 4) then
+            local copyCards = utils.copy(cards)
+            local inCard = utils.copy(CardCfgByThisId[cardId*10+1])
+            inCard.thisId = cardId*10+5
+            table.insert(copyCards, inCard)
+            local canHu = CheckCanHu(copyCards)
+            if canHu then
+                table.insert(inCardIds, cardId)
+            end
         end
     end
 
@@ -323,8 +335,7 @@ local function GetTingInfo(cards)
         table.insert(cardsByCardId[v.cardId],  v)
     end
 
-    for k, v in pairs(cardsByCardId) do
-        if #v == 4 then break end
+    for _, v in pairs(cardsByCardId) do
         local copyCards = utils.copy(cards)
         if GetTingObj(copyCards, v[1]) then
             table.insert(suggestsCards, v[1])
@@ -430,6 +441,10 @@ local function GetMultiCards(cards, suggestsCards)
             end
         end
     end
+
+    --utils.var_dump(cardGroups)
+    --print("----------------------")
+    --utils.var_dump(lackGroups)
 
     -- 残缺组合刚好满足希望 则剩余的牌作为推荐
     -- 残缺组合多余期望 则剩余的牌+残缺组合中的一组作为推荐
@@ -546,6 +561,7 @@ local function main()
 
         PrintPlayerInfo(1)
         local ret, outCardId = CalcPlayerTingInfo(1, player.handCards)
+
         if ret == 0 then break end
 
         OutCard(1, outCardId)

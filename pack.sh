@@ -40,7 +40,7 @@ PROJECT_DIR=$CUR_DIR/..
 
 SERVER_NAME=""
 FILE_SERVER_IP="10.4.22.22"
-FILE_SERVER_USER="huayu.x1"
+FILE_SERVER_USER="dasheng"
 FILE_SERVER_HTTP="http://dasheng.server.cc"
 FILE_SERVER_DIR="/home/dasheng/gohttpserver/share"
 
